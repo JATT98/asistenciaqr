@@ -1,0 +1,138 @@
+<app-navbar></app-navbar>
+<div class="mt-5 pt-5 container">
+  <div class="d-flex align-items-center row">
+    <h1 class="col-12 col-md-6 h3 mt-3 text-center">ESTUDIANTES</h1>
+    <a (click)="newStudent(content)" class="col-12 col-md-3 text-button text-center my-2">
+      <span class="material-icons-round" style="vertical-align: bottom;">add_circle_outline</span>
+      Nuevo estudiante
+    </a>
+    <a (click)="attachStudentModal(attachModal)" class="col-12 col-md-3 text-button text-center my-2">
+      <span class="material-icons-round" style="vertical-align: bottom;">add_circle_outline</span>
+      Asignar estudiante
+    </a>
+  </div>
+  <div *ngIf="groupedSubjects && getKeys(groupedSubjects).length > 0" class="mt-3">
+    <div *ngFor="let grade of getKeys(groupedSubjects)">
+      <div class="d-flex justify-content-between align-items-center">
+        <h2 class="h5">{{ grade }}</h2>
+      </div>
+      <div class="tableFixHead">
+        <table class="table">
+          <thead class="thead-light">
+            <tr>
+              <th class="text-center">Estudiante</th>
+              <th class="text-center">Teléfono</th>
+              <th class="text-center">Carné</th>
+              <th class="text-center">QR</th>
+              <th class="text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let subject of groupedSubjects[grade]">
+              <td style="color: #00A2AD; font-weight: bold; min-width: 165px !important;" class="text-center fw-bold">{{ subject.first_name + ' ' + subject.last_name }}</td>
+              <td class="text-center">{{ subject.phone }}</td>
+              <td class="text-center">{{ subject.physical_id }}</td>
+              <td class="text-center">
+                <a (click)="downloadQr(subject)" class="text-button" style="margin-top: 1.5rem !important;">
+                  <span class="material-icons-round" style="vertical-align: bottom;"> qr_code </span>
+                </a>
+              </td>
+              <td class="text-center">
+                <a (click)="editStudent(content, subject)" class="text-button mr-2" style="margin-top: 1.5rem !important;">
+                  <span class="material-icons-round" style="vertical-align: bottom;">edit</span>
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="getKeys(groupedSubjects).length === 0">
+    <p>No se encontraron materias para este profesor.</p>
+  </div>
+</div>
+
+<ng-template #content let-modal>
+	<div class="modal-header">
+		<h4 class="modal-title">{{modalTitle + ' ESTUDIANTE'}}</h4>
+		<button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+	</div>
+	<div class="modal-body">
+    <div class="row">
+      <div class="col-md-6 col-12 mb-3">
+        <label for="name-title">Nombres *</label>
+        <input  type="text" id="name-title" class="form-control"
+                placeholder="Eric Samuel" name="config-name"
+                [(ngModel)]="studentName" [ngModelOptions]="{standalone: true}" maxlength="100">
+      </div>
+      <div class="col-md-6 col-12 mb-3">
+        <label for="lastname-title">Apellidos *</label>
+        <input  type="text" id="lastname-title" class="form-control"
+                placeholder="Caal Yat" name="config-lastname"
+                [(ngModel)]="studentLastname" [ngModelOptions]="{standalone: true}" maxlength="100">
+      </div>
+      <div class="col-md-6 col-12 mb-3">
+        <label for="phone-title">Teléfono *</label>
+        <input  type="text" id="phone-title" class="form-control"
+                placeholder="1234578" name="config-phone"
+                [(ngModel)]="studentPhone" [ngModelOptions]="{standalone: true}" maxlength="20">
+      </div>
+      <div class="col-md-6 col-12 mb-3">
+        <label for="id-title">Carné </label>
+        <input  type="text" id="id-title" class="form-control"
+                placeholder="20241234" name="config-id"
+                [(ngModel)]="studentPhysicalId" [ngModelOptions]="{standalone: true}" maxlength="25">
+      </div>  
+    </div>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-primary" (click)="saveStudent(modal)">Guardar</button>
+	</div>
+</ng-template>
+
+<ng-template #attachModal let-modal>
+	<div class="modal-header">
+		<h4 class="modal-title">ASIGNAR ESTUDIANTE</h4>
+		<button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+	</div>
+	<div class="modal-body">
+    <div class="row">
+      <div class="col-md-6 col-12 mb-3">
+        <label for="gradeSelect">Selecciona un Grado:</label>
+        <ng-select
+          [items]="allGrades"
+          bindLabel="description"
+          bindValue="grade_id"
+          [(ngModel)]="selectedGrade"
+          placeholder="Selecciona un grado"
+        >
+        </ng-select>
+      </div> 
+      
+      <div class="col-md-6 col-12 mb-3">
+        <label for="studentSearch">Selecciona Estudiante:</label>
+        <ng-select
+          [items]="allStudents"
+          bindLabel="fullName"
+          bindValue="student_id"
+          [(ngModel)]="selectedAttachStudent"
+          [searchFn]="customSearch"
+          placeholder="Buscar por nombre, apellido, teléfono o ID"
+        >
+          <ng-template ng-option-tmp let-item="item">
+            {{ item.first_name }} {{ item.last_name }}
+          </ng-template>
+        </ng-select>
+      </div>
+    </div>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-primary" (click)="attachStudent(modal)">Asignar</button>
+	</div>
+</ng-template>

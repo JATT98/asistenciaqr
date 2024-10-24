@@ -1,0 +1,51 @@
+<app-navbar></app-navbar>
+<div class="w-100" style="background-color: #d3d6d8;">
+
+  <div class="mt-5 py-5 container container-content bg-light">
+    <div class="row align-items-center justify-content-center">
+      <button type="button" class="btn btn-secondary btn-lg col-4 mx-2" (click)="printRapport()">Generar PDF</button>
+      <button type="button" class="btn btn-success btn-lg col-4 mx-2" (click)="downloadExcel()">Generar XLSX</button>
+    </div>
+    <div class="m-3" id="printreport">
+      <div class="d-flex align-items-center row">
+        <p class="col-12 h3 mt-3">REPORTE
+          <span class="h5 ml-2">{{today | date: 'yyyy-MM-dd'}}</span>
+        </p>
+      </div>
+    
+      <div *ngFor="let grade of groupedData">
+        <h3>{{ grade.grade_description }}</h3>
+        
+        <div *ngFor="let subject of grade.subjects">
+          <h4>Curso: {{ subject.subject_description }}</h4>
+          <p>Hora de inicio: {{ subject.start_time }} - Hora de fin: {{ subject.end_time }}</p>
+          
+          <table>
+            <thead>
+              <tr>
+                <th class="px-3">ID</th>
+                <th class="px-3">Nombre</th>
+                <th class="px-3">Teléfono</th>
+                <th class="px-3">Carné</th>
+                <th class="px-3">Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let student of subject.students">
+                <td class="px-3">{{ student.student_id }}</td>
+                <td class="px-3">{{ student.first_name }} {{ student.last_name }}</td>
+                <td class="px-3">{{ student.phone }}</td>
+                <td class="px-3">{{ student.physical_id }}</td>
+                <td class="px-3">
+                  {{ student.attendance_status === '1105' ? 'A tiempo' : 
+                     student.attendance_status === '1106' ? 'Con retraso' : 'Inasistencia' }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <hr />
+        </div>
+      </div>  
+    </div>
+  </div>
+</div>

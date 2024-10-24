@@ -1,0 +1,158 @@
+<app-navbar></app-navbar>
+<div class="mt-5 pt-5 container">
+  <div class="d-flex align-items-center row">
+    <h1 class="col-12 col-md-6 h3 mt-3 text-center">ASISTENCIA</h1>
+    <a (click)="newGrade(gradeModal)" class="col-12 col-md-3 text-button text-center my-2">
+      <span class="material-icons-round" style="vertical-align: bottom;">add_circle_outline</span>
+      Nuevo grado
+    </a>
+    <a (click)="newSubject(subjectModal)" class="col-12 col-md-3 text-button text-center my-2">
+      <span class="material-icons-round" style="vertical-align: bottom;">add_circle_outline</span>
+      Nueva materia
+    </a>
+  </div>
+  <div *ngIf="groupedSubjects && getKeys(groupedSubjects).length > 0">
+    <div *ngFor="let grade of getKeys(groupedSubjects)">
+      <!-- Tabla principal con el nombre de la carrera -->
+      <h2 class="h5">{{ grade }}</h2>
+
+      <!-- Tabla secundaria con los cursos -->
+      <div class="tableFixHead">
+        <table class="table">
+          <thead class="thead-light">
+            <tr>
+              <th class="text-center">Curso</th>
+              <th class="text-center">Sección</th>
+              <th class="text-center">Entrada</th>
+              <th class="text-center">Salida</th>
+              <th class="text-center">Tolerancia de entrada</th>
+              <th class="text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let subject of groupedSubjects[grade]">
+              <td style="color: #00A2AD; font-weight: bold; min-width: 265px !important;" class="text-center fw-bold">{{ subject.subject_name }}</td>
+              <td class="text-center">{{ subject.section }}</td>
+              <td class="text-center">{{ subject.start_time }}</td>
+              <td class="text-center">{{ subject.end_time }}</td>
+              <td class="text-center">{{ subject.tolerancy_in_minutes }} (minutos)</td>
+              <td class="text-center">
+                <!-- Íconos de acción -->
+                <a (click)="editSubject(subjectModal, subject)" class="text-button mr-2" style="margin-top: 1.5rem !important;">
+                  <span class="material-icons-round" style="vertical-align: bottom;">edit</span>
+                </a>
+                <a (click)="viewSubject(qrModal, subject)" class="text-button" style="margin-top: 1.5rem !important;">
+                  <span class="material-icons-round" style="vertical-align: bottom;"> qr_code_scanner </span>
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="getKeys(groupedSubjects).length === 0">
+    <p>No se encontraron materias para este profesor.</p>
+  </div>
+</div>
+
+<ng-template #gradeModal let-modal>
+	<div class="modal-header">
+		<h4 class="modal-title">NUEVO GRADO</h4>
+		<button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+	</div>
+	<div class="modal-body">
+		<div class="row">
+      <div class="col-12 mb-3">
+        <label for="grade-title">Nombre del grado *</label>
+        <input  type="text" id="grade-title" class="form-control"
+                placeholder="4rto. Perito en Electrónica" name="grade-name"
+                [(ngModel)]="gradeName" [ngModelOptions]="{standalone: true}" maxlength="120">
+      </div>
+    </div>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-primary" (click)="saveGrade(modal)">Guardar</button>
+	</div>
+</ng-template>
+
+<ng-template #subjectModal let-modal>
+	<div class="modal-header">
+		<h4 class="modal-title">{{modalTitle + ' MATERIA'}}</h4>
+		<button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+	</div>
+	<div class="modal-body">
+		<div class="row">
+      <div class="col-md-6 col-12 mb-3">
+        <label for="subject-title">Materia *</label>
+        <input  type="text" id="subject-title" class="form-control"
+                placeholder="Matemáticas" name="config-subject"
+                [(ngModel)]="subjectName" [ngModelOptions]="{standalone: true}" maxlength="100">
+      </div>
+      <div class="col-md-3 col-6 mb-3">
+        <label for="start-title">Entrada *</label>
+        <input  type="text" id="start-title" class="form-control"
+                placeholder="7:45" name="config-start"
+                [(ngModel)]="startTime" [ngModelOptions]="{standalone: true}" maxlength="5">
+      </div>
+      <div class="col-md-3 col-6 mb-3">
+        <label for="end-title">Salida *</label>
+        <input  type="text" id="end-title" class="form-control"
+                placeholder="8:15" name="config-end"
+                [(ngModel)]="endTime" [ngModelOptions]="{standalone: true}" maxlength="5">
+      </div>
+      <div class="col-md-3 col-6 mb-3">
+        <label for="section-title">Sección *</label>
+        <input  type="text" id="section-title" class="form-control"
+                placeholder="Única" name="config-section"
+                [(ngModel)]="section" [ngModelOptions]="{standalone: true}" maxlength="20">
+      </div>
+      <div class="col-md-3 col-6 mb-3">
+        <label for="tolerancy-title">Tolerancia de entrada *</label>
+        <input  type="text" id="tolerancy-title" class="form-control"
+                placeholder="5" name="config-tolerancy"
+                [(ngModel)]="tolerancy" [ngModelOptions]="{standalone: true}" maxlength="5">
+      </div>
+      <div class="col-md-6 col-12 mb-3">
+        <label for="gradeSelect">Selecciona un Grado:</label>
+        <ng-select
+          [items]="allGrades"
+          bindLabel="description"
+          bindValue="grade_id"
+          [(ngModel)]="selectedGrade"
+          placeholder="Selecciona un grado"
+        >
+        </ng-select>
+      </div> 
+    </div>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-primary" (click)="saveSubject(modal)">Guardar</button>
+	</div>
+</ng-template>
+
+<ng-template #qrModal let-modal>
+	<div class="modal-header">
+    <h4 class="modal-title">LECTOR</h4>	
+		<button type="button" class="close" aria-label="Close" (click)="modal.dismiss()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+	</div>
+	<div class="modal-body">
+    <div class="custom-control custom-switch mb-1">
+      <input type="checkbox" class="custom-control-input" id="customSwitch1" [(ngModel)]="isLate">
+      <label class="custom-control-label" for="customSwitch1">Asistencia tardía</label>
+    </div> 
+		<div class="row d-flex align-items-center justify-content-center">
+      <zxing-scanner class="col-12"
+        [start]="true"
+        (scanSuccess)="handleQrCode($event)">
+      </zxing-scanner>
+    </div>
+	</div>
+</ng-template>

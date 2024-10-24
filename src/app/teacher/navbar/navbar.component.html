@@ -1,0 +1,39 @@
+<nav id="navbar" class="fixed-top" style="background-color: #00A2AD;">
+  <div class="container d-flex align-items-center justify-content-between">
+    <a [routerLink]="['/teacher/home']" class="d-flex d-flex align-items-center">
+      <img src="../../../assets/images/logo_cti_white.png" alt="CTI Logo" id="logo">
+      <div class="d-flex" style="min-height: 75px !important;"> 
+        <a [routerLink]="['/teacher/home']" class="navbar-item mt-1 mx-2 text-button text-left text-light text-decoration-none d-flex d-flex align-items-center align-items-center" >
+          <p class="h5 navbar-brand">Sistema de Asistencia</p>
+        </a>  
+      </div>
+    </a>
+    <div class="d-flex" style="min-height: 75px !important;"> 
+
+    </div>
+    <div id="navbar-elements" class="d-flex">
+      <ul class="list-unstyled m-0 mobile-menu-items">
+        <li class="navbar-item text-button d-flex justify-content-center">
+          <a [routerLink]="['/teacher/home']" class="text-white text-decoration-none d-flex align-items-center">Asistencia</a>
+        </li>
+        <li class="navbar-item text-button d-flex justify-content-center">
+          <a [routerLink]="['/teacher/reports']" class="text-white text-decoration-none d-flex align-items-center">Reportes</a>
+        </li>
+        <li class="navbar-item text-button d-flex justify-content-center">
+          <a [routerLink]="['/teacher/students']" class="text-white text-decoration-none d-flex align-items-center">Estudiantes</a>
+        </li>
+      </ul>
+      <a
+        class="avatar navbar-item text-button text-white text-decoration-none  d-flex align-items-center">
+        <p class="my-0 mx-2 ">{{this.firstName}}</p>
+      </a>
+      <a (click)="logout()" class="cursor-pointer avatar navbar-item text-button text-white text-decoration-none  d-flex align-items-center">
+        <span class="material-icons-round">logout</span>
+      </a>
+      <a id="mobile-menu-button"
+        class="navbar-item text-button d-block d-lg-none text-white text-decoration-none d-flex align-items-center">
+        <span class="material-icons-round mx-2">menu</span>
+      </a>
+    </div>
+  </div>
+</nav>
